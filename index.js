@@ -4,8 +4,12 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+// ЧИТАЕТ ТЕКУЩУЮ ДИРЕКТОРИЮ
+fs.readdirSync('./')
+
 const callTelegramApi = require('./callTelegramApi')
 const sendMessage = require('./sendMessage')
+const sendAudio = require('./sendAudio')
 
 let offset = Number(fs.readFileSync('./offset.txt', { encoding: 'utf-8' }))
 
@@ -25,6 +29,8 @@ function startPolling() {
 
       if(request.result[request.result.length - 1].message.text.includes('/музон')) {
         sendMessage(request.result[request.result.length - 1].message.chat.id, 'Я еще не умею :(')
+
+        sendAudio(request.result[request.result.length - 1].message.chat.id, 'song.mp3')
       }
     }
   }
