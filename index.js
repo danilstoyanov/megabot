@@ -5,8 +5,19 @@ const app = express()
 const port = 3000
 
 // ЧИТАЕТ ТЕКУЩУЮ ДИРЕКТОРИЮ
-fs.readdirSync('./')
+let musicArray = fs.readdirSync('./music')
 
+//get random song
+function getRandomSong() {
+  function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
+  }
+  let randomNumber = getRandomIntInclusive(0, musicArray.length - 1)
+  return `./music/${musicArray[randomNumber]}`
+}
+//modules inport
 const callTelegramApi = require('./callTelegramApi')
 const sendMessage = require('./sendMessage')
 const sendAudio = require('./sendAudio')
@@ -28,9 +39,9 @@ function startPolling() {
       updateOffset(offset)
 
       if(request.result[request.result.length - 1].message.text.includes('/музон')) {
-        sendMessage(request.result[request.result.length - 1].message.chat.id, 'Я еще не умею :(')
+        sendMessage(request.result[request.result.length - 1].message.chat.id, 'Если вызвал меня, обязательно послушай песенку!:)')
 
-        sendAudio(request.result[request.result.length - 1].message.chat.id, 'song.mp3')
+        sendAudio(request.result[request.result.length - 1].message.chat.id, getRandomSong())
       }
     }
   }
